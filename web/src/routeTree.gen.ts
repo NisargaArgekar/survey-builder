@@ -10,33 +10,117 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
+import { Route as SurveySurveyIdRouteImport } from './routes/survey/$surveyId'
+import { Route as AuthSignupRouteImport } from './routes/auth/signup'
+import { Route as AuthLoginRouteImport } from './routes/auth/login'
+import { Route as DashboardSurveyIdResponsesRouteImport } from './routes/dashboard/$surveyId/responses'
+import { Route as DashboardSurveyIdBuilderRouteImport } from './routes/dashboard/$surveyId/builder'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardIndexRoute = DashboardIndexRouteImport.update({
+  id: '/dashboard/',
+  path: '/dashboard/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SurveySurveyIdRoute = SurveySurveyIdRouteImport.update({
+  id: '/survey/$surveyId',
+  path: '/survey/$surveyId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthSignupRoute = AuthSignupRouteImport.update({
+  id: '/auth/signup',
+  path: '/auth/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthLoginRoute = AuthLoginRouteImport.update({
+  id: '/auth/login',
+  path: '/auth/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardSurveyIdResponsesRoute =
+  DashboardSurveyIdResponsesRouteImport.update({
+    id: '/dashboard/$surveyId/responses',
+    path: '/dashboard/$surveyId/responses',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DashboardSurveyIdBuilderRoute =
+  DashboardSurveyIdBuilderRouteImport.update({
+    id: '/dashboard/$surveyId/builder',
+    path: '/dashboard/$surveyId/builder',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth/login': typeof AuthLoginRoute
+  '/auth/signup': typeof AuthSignupRoute
+  '/survey/$surveyId': typeof SurveySurveyIdRoute
+  '/dashboard/': typeof DashboardIndexRoute
+  '/dashboard/$surveyId/builder': typeof DashboardSurveyIdBuilderRoute
+  '/dashboard/$surveyId/responses': typeof DashboardSurveyIdResponsesRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth/login': typeof AuthLoginRoute
+  '/auth/signup': typeof AuthSignupRoute
+  '/survey/$surveyId': typeof SurveySurveyIdRoute
+  '/dashboard': typeof DashboardIndexRoute
+  '/dashboard/$surveyId/builder': typeof DashboardSurveyIdBuilderRoute
+  '/dashboard/$surveyId/responses': typeof DashboardSurveyIdResponsesRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/auth/login': typeof AuthLoginRoute
+  '/auth/signup': typeof AuthSignupRoute
+  '/survey/$surveyId': typeof SurveySurveyIdRoute
+  '/dashboard/': typeof DashboardIndexRoute
+  '/dashboard/$surveyId/builder': typeof DashboardSurveyIdBuilderRoute
+  '/dashboard/$surveyId/responses': typeof DashboardSurveyIdResponsesRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/auth/login'
+    | '/auth/signup'
+    | '/survey/$surveyId'
+    | '/dashboard/'
+    | '/dashboard/$surveyId/builder'
+    | '/dashboard/$surveyId/responses'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/auth/login'
+    | '/auth/signup'
+    | '/survey/$surveyId'
+    | '/dashboard'
+    | '/dashboard/$surveyId/builder'
+    | '/dashboard/$surveyId/responses'
+  id:
+    | '__root__'
+    | '/'
+    | '/auth/login'
+    | '/auth/signup'
+    | '/survey/$surveyId'
+    | '/dashboard/'
+    | '/dashboard/$surveyId/builder'
+    | '/dashboard/$surveyId/responses'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthLoginRoute: typeof AuthLoginRoute
+  AuthSignupRoute: typeof AuthSignupRoute
+  SurveySurveyIdRoute: typeof SurveySurveyIdRoute
+  DashboardIndexRoute: typeof DashboardIndexRoute
+  DashboardSurveyIdBuilderRoute: typeof DashboardSurveyIdBuilderRoute
+  DashboardSurveyIdResponsesRoute: typeof DashboardSurveyIdResponsesRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +132,59 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard/': {
+      id: '/dashboard/'
+      path: '/dashboard'
+      fullPath: '/dashboard/'
+      preLoaderRoute: typeof DashboardIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/survey/$surveyId': {
+      id: '/survey/$surveyId'
+      path: '/survey/$surveyId'
+      fullPath: '/survey/$surveyId'
+      preLoaderRoute: typeof SurveySurveyIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/signup': {
+      id: '/auth/signup'
+      path: '/auth/signup'
+      fullPath: '/auth/signup'
+      preLoaderRoute: typeof AuthSignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/login': {
+      id: '/auth/login'
+      path: '/auth/login'
+      fullPath: '/auth/login'
+      preLoaderRoute: typeof AuthLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/$surveyId/responses': {
+      id: '/dashboard/$surveyId/responses'
+      path: '/dashboard/$surveyId/responses'
+      fullPath: '/dashboard/$surveyId/responses'
+      preLoaderRoute: typeof DashboardSurveyIdResponsesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/$surveyId/builder': {
+      id: '/dashboard/$surveyId/builder'
+      path: '/dashboard/$surveyId/builder'
+      fullPath: '/dashboard/$surveyId/builder'
+      preLoaderRoute: typeof DashboardSurveyIdBuilderRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthLoginRoute: AuthLoginRoute,
+  AuthSignupRoute: AuthSignupRoute,
+  SurveySurveyIdRoute: SurveySurveyIdRoute,
+  DashboardIndexRoute: DashboardIndexRoute,
+  DashboardSurveyIdBuilderRoute: DashboardSurveyIdBuilderRoute,
+  DashboardSurveyIdResponsesRoute: DashboardSurveyIdResponsesRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
