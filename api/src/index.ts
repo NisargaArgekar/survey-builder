@@ -21,7 +21,7 @@ app.use('*', async (c, next) => {
 app.get('/api/health', (c) => c.json({ status: 'ok' }))
 
 // Routes
-app.route('/api', authRouter)
+app.route('/api/auth', authRouter)
 app.route('/api', surveysRouter)
 app.route('/api', questionsRouter)
 app.route('/api', responsesRouter)
