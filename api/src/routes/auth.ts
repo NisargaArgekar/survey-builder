@@ -1,6 +1,6 @@
 import { Hono } from 'hono'
 import { createUser, getUserByEmail, getUser } from '../db/queries'
-import { generateId, generateToken } from '../utils/auth'
+import { generateId, generateToken, hashPassword } from '../utils/auth'
 
 const authRouter = new Hono<{ Bindings: Env }>()
 
