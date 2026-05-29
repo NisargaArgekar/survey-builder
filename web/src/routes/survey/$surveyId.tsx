@@ -67,15 +67,34 @@ function PublicSurveyPage() {
     }
   }
 
-  if (isLoading) return <div>Loading survey...</div>
-  if (!survey) return <div>Survey not found</div>
+  if (isLoading)
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <p className="text-gray-600">Loading survey...</p>
+      </div>
+    )
+  if (!survey)
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <p className="text-gray-600">Survey not found</p>
+      </div>
+    )
 
   if (isSubmitted) {
     return (
-      <div className="max-w-2xl mx-auto py-12 text-center">
-        <div className="bg-green-100 border border-green-400 text-green-700 px-6 py-4 rounded">
-          <h2 className="text-2xl font-bold mb-2">Thank You!</h2>
-          <p>Your response has been submitted successfully.</p>
+      <div
+        className="min-h-screen flex items-center justify-center py-12 px-4"
+        style={{
+          backgroundColor: survey.primary_color + '15',
+        }}
+      >
+        <div className="max-w-md w-full">
+          <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-12 text-center">
+            <div className="text-6xl mb-4">✅</div>
+            <h2 className="text-3xl font-bold text-gray-900 mb-3">Thank You!</h2>
+            <p className="text-gray-600 mb-6">Your response has been submitted successfully.</p>
+            <p className="text-sm text-gray-500">We appreciate your feedback!</p>
+          </div>
         </div>
       </div>
     )
@@ -83,36 +102,40 @@ function PublicSurveyPage() {
 
   return (
     <div
-      className="min-h-screen py-8"
+      className="min-h-screen py-12 px-4"
       style={{
-        backgroundColor: survey.primary_color + '15',
+        backgroundColor: survey.primary_color + '10',
       }}
     >
       <div className="max-w-2xl mx-auto">
         {/* Survey Header */}
-        <div className="bg-white rounded-lg shadow p-8 mb-8">
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 mb-8">
           <div className="flex items-start gap-4 mb-4">
             {survey.logo_url && (
-              <img src={survey.logo_url} alt="Logo" className="w-16 h-16 object-contain" />
+              <img src={survey.logo_url} alt="Logo" className="w-20 h-20 object-contain flex-shrink-0" />
             )}
-            <div>
-              <h1 className="text-3xl font-bold" style={{ color: survey.primary_color }}>
+            <div className="flex-1">
+              <h1 className="text-4xl font-bold" style={{ color: survey.primary_color }}>
                 {survey.title}
               </h1>
-              {survey.description && <p className="text-gray-600 mt-2">{survey.description}</p>}
+              {survey.description && <p className="text-gray-600 mt-3 text-lg">{survey.description}</p>}
             </div>
           </div>
         </div>
 
-        {error && <div className="mb-4 p-4 bg-red-100 text-red-700 rounded">{error}</div>}
+        {error && (
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg">
+            {error}
+          </div>
+        )}
 
         {/* Survey Form */}
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-5">
           {questions.map((question, index) => (
-            <div key={question.id} className="bg-white rounded-lg shadow p-6">
-              <label className="block font-semibold text-gray-900 mb-2">
+            <div key={question.id} className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
+              <label className="block font-semibold text-gray-900 mb-3 text-lg">
                 {index + 1}. {question.label}
-                {question.is_required && <span className="text-red-600">*</span>}
+                {question.is_required && <span className="text-red-600 ml-1">*</span>}
               </label>
 
               {question.description && (
@@ -125,7 +148,7 @@ function PublicSurveyPage() {
                   value={answers[question.id] || ''}
                   onChange={(e) => handleAnswerChange(question.id, e.target.value)}
                   required={question.is_required}
-                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                   placeholder="Your answer..."
                 />
               )}
@@ -135,8 +158,8 @@ function PublicSurveyPage() {
                   value={answers[question.id] || ''}
                   onChange={(e) => handleAnswerChange(question.id, e.target.value)}
                   required={question.is_required}
-                  rows={4}
-                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  rows={5}
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                   placeholder="Your answer..."
                 />
               )}
@@ -147,41 +170,48 @@ function PublicSurveyPage() {
                   value={answers[question.id] || ''}
                   onChange={(e) => handleAnswerChange(question.id, e.target.value)}
                   required={question.is_required}
-                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="your@email.com"
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                  placeholder="you@example.com"
                 />
               )}
 
               {question.type === 'multiple_choice' && question.options && (
-                <div className="space-y-2">
+                <div className="space-y-3">
                   {JSON.parse(question.options).map((option: string) => (
-                    <label key={option} className="flex items-center">
+                    <label key={option} className="flex items-center p-3 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition">
                       <input
                         type="radio"
                         name={question.id}
                         value={option}
                         checked={answers[question.id] === option}
                         onChange={(e) => handleAnswerChange(question.id, e.target.value)}
-                        className="mr-2"
+                        className="w-4 h-4 cursor-pointer"
                       />
-                      {option}
+                      <span className="ml-3 text-gray-900 font-medium">{option}</span>
                     </label>
                   ))}
                 </div>
               )}
 
               {question.type === 'rating' && (
-                <div className="flex gap-2">
+                <div className="flex gap-3 justify-center">
                   {[1, 2, 3, 4, 5].map((rating) => (
                     <button
                       key={rating}
                       type="button"
                       onClick={() => handleAnswerChange(question.id, String(rating))}
-                      className={`w-12 h-12 rounded-lg border-2 font-semibold ${
+                      className={`w-14 h-14 rounded-full border-2 font-bold text-lg transition ${
                         answers[question.id] === String(rating)
-                          ? 'bg-blue-600 text-white border-blue-600'
-                          : 'bg-white text-gray-700 border-gray-300 hover:border-blue-600'
+                          ? `text-white border-0`
+                          : 'bg-white text-gray-700 border-gray-300 hover:border-blue-500'
                       }`}
+                      style={
+                        answers[question.id] === String(rating)
+                          ? {
+                              backgroundColor: survey.primary_color,
+                            }
+                          : {}
+                      }
                     >
                       {rating}
                     </button>
@@ -195,7 +225,7 @@ function PublicSurveyPage() {
                   value={answers[question.id] || ''}
                   onChange={(e) => handleAnswerChange(question.id, e.target.value)}
                   required={question.is_required}
-                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                 />
               )}
             </div>
@@ -204,7 +234,7 @@ function PublicSurveyPage() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full px-6 py-3 text-white font-semibold rounded-lg hover:opacity-90 disabled:opacity-50"
+            className="w-full px-6 py-3.5 text-white font-semibold rounded-lg hover:opacity-90 disabled:opacity-50 transition text-lg"
             style={{
               backgroundColor: survey.primary_color,
             }}
