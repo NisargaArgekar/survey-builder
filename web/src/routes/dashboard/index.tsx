@@ -130,21 +130,31 @@ function DashboardPage() {
                     {survey.description || 'No description'}
                   </p>
 
-                  <div className="grid gap-3">
+                  <div className="space-y-2">
                     <Link
-                      to={`/dashboard/$surveyId/builder`}
+                      to="/dashboard/$surveyId/builder"
                       params={{ surveyId: survey.id }}
                       className="block rounded-full border border-slate-200 bg-slate-50 px-4 py-3 text-center text-sm font-semibold text-slate-900 transition hover:bg-slate-100"
                     >
-                      Edit
+                      ✏️ Edit
                     </Link>
                     <Link
-                      to={`/dashboard/$surveyId/responses`}
+                      to="/dashboard/$surveyId/responses"
                       params={{ surveyId: survey.id }}
-                      className="block rounded-full border border-slate-200 bg-emerald-50 px-4 py-3 text-center text-sm font-semibold text-emerald-700 transition hover:bg-emerald-100"
+                      className="block rounded-full border border-green-200 bg-green-50 px-4 py-3 text-center text-sm font-semibold text-green-700 transition hover:bg-green-100"
                     >
-                      Responses
+                      📊 Responses
                     </Link>
+                    <button
+                      onClick={() => {
+                        const url = `${window.location.origin}/survey/${survey.id}`
+                        navigator.clipboard.writeText(url)
+                        alert('Survey link copied to clipboard!')
+                      }}
+                      className="w-full rounded-full border border-blue-200 bg-blue-50 px-4 py-3 text-center text-sm font-semibold text-blue-700 transition hover:bg-blue-100"
+                    >
+                      🔗 Copy Link
+                    </button>
                     <button
                       onClick={() => handleDeleteSurvey(survey.id)}
                       className="w-full rounded-full border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-600 transition hover:bg-red-100"

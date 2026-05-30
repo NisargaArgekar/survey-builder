@@ -12,6 +12,9 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
 import { Route as SurveySurveyIdRouteImport } from './routes/survey/$surveyId'
+import { Route as DashboardResponsesRouteImport } from './routes/dashboard/responses'
+import { Route as DashboardBuilderRouteImport } from './routes/dashboard/builder'
+import { Route as DashboardBrandingRouteImport } from './routes/dashboard/branding'
 import { Route as AuthSignupRouteImport } from './routes/auth/signup'
 import { Route as AuthLoginRouteImport } from './routes/auth/login'
 import { Route as DashboardIndexNewRouteImport } from './routes/dashboard/index.new'
@@ -31,6 +34,21 @@ const DashboardIndexRoute = DashboardIndexRouteImport.update({
 const SurveySurveyIdRoute = SurveySurveyIdRouteImport.update({
   id: '/survey/$surveyId',
   path: '/survey/$surveyId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardResponsesRoute = DashboardResponsesRouteImport.update({
+  id: '/dashboard/responses',
+  path: '/dashboard/responses',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardBuilderRoute = DashboardBuilderRouteImport.update({
+  id: '/dashboard/builder',
+  path: '/dashboard/builder',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardBrandingRoute = DashboardBrandingRouteImport.update({
+  id: '/dashboard/branding',
+  path: '/dashboard/branding',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthSignupRoute = AuthSignupRouteImport.update({
@@ -65,6 +83,9 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/signup': typeof AuthSignupRoute
+  '/dashboard/branding': typeof DashboardBrandingRoute
+  '/dashboard/builder': typeof DashboardBuilderRoute
+  '/dashboard/responses': typeof DashboardResponsesRoute
   '/survey/$surveyId': typeof SurveySurveyIdRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/dashboard/$surveyId/builder': typeof DashboardSurveyIdBuilderRoute
@@ -75,6 +96,9 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/signup': typeof AuthSignupRoute
+  '/dashboard/branding': typeof DashboardBrandingRoute
+  '/dashboard/builder': typeof DashboardBuilderRoute
+  '/dashboard/responses': typeof DashboardResponsesRoute
   '/survey/$surveyId': typeof SurveySurveyIdRoute
   '/dashboard': typeof DashboardIndexRoute
   '/dashboard/$surveyId/builder': typeof DashboardSurveyIdBuilderRoute
@@ -86,6 +110,9 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/signup': typeof AuthSignupRoute
+  '/dashboard/branding': typeof DashboardBrandingRoute
+  '/dashboard/builder': typeof DashboardBuilderRoute
+  '/dashboard/responses': typeof DashboardResponsesRoute
   '/survey/$surveyId': typeof SurveySurveyIdRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/dashboard/$surveyId/builder': typeof DashboardSurveyIdBuilderRoute
@@ -98,6 +125,9 @@ export interface FileRouteTypes {
     | '/'
     | '/auth/login'
     | '/auth/signup'
+    | '/dashboard/branding'
+    | '/dashboard/builder'
+    | '/dashboard/responses'
     | '/survey/$surveyId'
     | '/dashboard/'
     | '/dashboard/$surveyId/builder'
@@ -108,6 +138,9 @@ export interface FileRouteTypes {
     | '/'
     | '/auth/login'
     | '/auth/signup'
+    | '/dashboard/branding'
+    | '/dashboard/builder'
+    | '/dashboard/responses'
     | '/survey/$surveyId'
     | '/dashboard'
     | '/dashboard/$surveyId/builder'
@@ -118,6 +151,9 @@ export interface FileRouteTypes {
     | '/'
     | '/auth/login'
     | '/auth/signup'
+    | '/dashboard/branding'
+    | '/dashboard/builder'
+    | '/dashboard/responses'
     | '/survey/$surveyId'
     | '/dashboard/'
     | '/dashboard/$surveyId/builder'
@@ -129,6 +165,9 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthLoginRoute: typeof AuthLoginRoute
   AuthSignupRoute: typeof AuthSignupRoute
+  DashboardBrandingRoute: typeof DashboardBrandingRoute
+  DashboardBuilderRoute: typeof DashboardBuilderRoute
+  DashboardResponsesRoute: typeof DashboardResponsesRoute
   SurveySurveyIdRoute: typeof SurveySurveyIdRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
   DashboardSurveyIdBuilderRoute: typeof DashboardSurveyIdBuilderRoute
@@ -157,6 +196,27 @@ declare module '@tanstack/react-router' {
       path: '/survey/$surveyId'
       fullPath: '/survey/$surveyId'
       preLoaderRoute: typeof SurveySurveyIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/responses': {
+      id: '/dashboard/responses'
+      path: '/dashboard/responses'
+      fullPath: '/dashboard/responses'
+      preLoaderRoute: typeof DashboardResponsesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/builder': {
+      id: '/dashboard/builder'
+      path: '/dashboard/builder'
+      fullPath: '/dashboard/builder'
+      preLoaderRoute: typeof DashboardBuilderRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/branding': {
+      id: '/dashboard/branding'
+      path: '/dashboard/branding'
+      fullPath: '/dashboard/branding'
+      preLoaderRoute: typeof DashboardBrandingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth/signup': {
@@ -201,6 +261,9 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthLoginRoute: AuthLoginRoute,
   AuthSignupRoute: AuthSignupRoute,
+  DashboardBrandingRoute: DashboardBrandingRoute,
+  DashboardBuilderRoute: DashboardBuilderRoute,
+  DashboardResponsesRoute: DashboardResponsesRoute,
   SurveySurveyIdRoute: SurveySurveyIdRoute,
   DashboardIndexRoute: DashboardIndexRoute,
   DashboardSurveyIdBuilderRoute: DashboardSurveyIdBuilderRoute,

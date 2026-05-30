@@ -1,7 +1,8 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
-import type { Question, Survey } from '../../types'
+import type { Question, QuestionType, Survey } from '../../types'
 import { questionsApi, responsesApi, surveysApi } from '../../utils/api'
+
 const QUESTION_TYPE_LABELS: Record<QuestionType, string> = {
   short_text: 'Short Text',
   long_text: 'Long Text',
