@@ -11,7 +11,7 @@ export const Route = createFileRoute('/dashboard/responses')({
 function ResponsesPage() {
   const navigate = useNavigate()
   const { user } = useAuth()
-  const { surveyId } = Route.useParams()
+  const { surveyId } = Route.useParams<{ surveyId: string }>()
 
   const [questions, setQuestions] = useState<Question[]>([])
   const [responses, setResponses] = useState<Response[]>([])

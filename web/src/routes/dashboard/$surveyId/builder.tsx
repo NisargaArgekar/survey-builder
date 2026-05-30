@@ -8,6 +8,7 @@ export const Route = createFileRoute('/dashboard/$surveyId/builder')({
   component: SurveyBuilderPage,
 })
 
+
 const QUESTION_TYPES: { value: QuestionType; label: string }[] = [
   { value: 'short_text', label: 'Short Text' },
   { value: 'long_text', label: 'Long Text' },
@@ -24,7 +25,7 @@ interface QuestionEditState extends Question {
 function SurveyBuilderPage() {
   const navigate = useNavigate()
   const { user } = useAuth()
-  const { surveyId } = Route.useParams()
+  const { surveyId } = Route.useParams<{ surveyId: string }>()
   const [survey, setSurvey] = useState<Survey | null>(null)
   const [questions, setQuestions] = useState<QuestionEditState[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -146,10 +147,15 @@ function SurveyBuilderPage() {
 
     const newQuestions = [...questions]
     const newIndex = direction === 'up' ? index - 1 : index + 1
-    ;[newQuestions[index], newQuestions[newIndex]] = [
-      newQuestions[newIndex],
-      newQuestions[index],
-    ]
+    const currentQuestion = newQuestions[index]
+    const targetQuestion = newQuestions[newIndex]
+
+    if (!currentQuestion || !targetQuestion) {
+      return
+    }
+
+    newQuestions[index] = targetQuestion
+    newQuestions[newIndex] = currentQuestion
 
     setQuestions(newQuestions)
 
@@ -191,13 +197,13 @@ function SurveyBuilderPage() {
   if (!survey) return <div className="flex items-center justify-center min-h-screen">Survey not found</div>
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-slate-100 to-sky-50 py-12">
+    <div className="min-h-screen bg-slate-50 py-12">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-8 rounded-[2rem] border border-slate-200 bg-white/90 p-8 shadow-xl shadow-slate-200/60 backdrop-blur-sm">
+        <div className="mb-8 rounded-[2rem] border border-slate-200 bg-white p-8 shadow-xl shadow-slate-200/60">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-sky-600">Survey Builder</p>
-              <h1 className="mt-3 text-4xl font-bold tracking-tight text-slate-900">{survey.title || 'Untitled Survey'}</h1>
+              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-slate-700">Survey Builder</p>
+              <h1 className="mt-3 text-4xl font-bold tracking-tight text-black">{survey.title || 'Untitled Survey'}</h1>
               {survey.description ? (
                 <p className="mt-3 max-w-2xl text-base leading-7 text-slate-600">{survey.description}</p>
               ) : (
@@ -411,7 +417,7 @@ function SurveyBuilderPage() {
                 params: { surveyId: survey.id },
               })
             }
-            className="flex-1 px-4 py-2.5 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition"
+            className="flex-1 px-4 py-2.5 bg-black text-white font-semibold rounded-lg hover:bg-slate-900 transition"
           >
             Preview Survey
           </button>
@@ -446,6 +452,7 @@ function QuestionCard({
   onMoveUp,
   onMoveDown,
   onEditingOptionsChange,
+  onCancel,
 }: QuestionCardProps) {
   const [label, setLabel] = useState(question.label)
   const [type, setType] = useState<QuestionType>(question.type)
@@ -470,8 +477,8 @@ function QuestionCard({
       try {
         const options = optionsStr
           .split('\n')
-          .map((o) => o.trim())
-          .filter((o) => o)
+          .map((o: string) => o.trim())
+          .filter((o: string) => o)
         updates.options = JSON.stringify(options)
       } catch {
         alert('Invalid options format')

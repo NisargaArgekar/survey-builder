@@ -11,7 +11,7 @@ export const Route = createFileRoute('/dashboard/branding')({
 function BrandingPage() {
   const navigate = useNavigate()
   const { user } = useAuth()
-  const { surveyId } = Route.useParams()
+  const { surveyId } = Route.useParams<{ surveyId: string }>()
 
   const [survey, setSurvey] = useState<Survey | null>(null)
   const [isLoading, setIsLoading] = useState(true)

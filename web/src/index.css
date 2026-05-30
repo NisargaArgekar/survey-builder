@@ -3,13 +3,18 @@
 @tailwind utilities;
 
 /* Custom styles */
+html {
+  background: white;
+}
+
 body {
   font-family: system-ui, -apple-system, sans-serif;
-  @apply bg-gray-50;
+  @apply bg-white text-slate-900;
+  filter: grayscale(100%) contrast(115%);
 }
 
 a {
-  @apply text-blue-600 hover:text-blue-800;
+  @apply text-slate-900 hover:text-slate-700;
 }
 
 button {

@@ -73,22 +73,22 @@ function DashboardPage() {
     <div className="min-h-screen bg-slate-50 py-12 px-4">
       <div className="mx-auto max-w-6xl">
         <div className="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-xl mb-10">
-          <div className="h-2 bg-gradient-to-r from-sky-500 via-sky-600 to-cyan-500" />
-          <div className="p-8 lg:p-10">
-            <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-              <div>
-                <h1 className="text-4xl font-bold text-slate-900">My Surveys</h1>
-                <p className="text-slate-600 mt-2">{surveys.length} survey{surveys.length !== 1 ? 's' : ''}</p>
+            <div className="h-2 bg-black" />
+            <div className="p-8 lg:p-10">
+              <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+                <div>
+                  <h1 className="text-4xl font-bold text-black">My Surveys</h1>
+                  <p className="text-slate-600 mt-2">{surveys.length} survey{surveys.length !== 1 ? 's' : ''}</p>
+                </div>
+                <button
+                  onClick={handleCreateSurvey}
+                  className="inline-flex items-center justify-center rounded-full bg-black px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-slate-900/10 transition hover:bg-slate-900"
+                >
+                  + Create Survey
+                </button>
               </div>
-              <button
-                onClick={handleCreateSurvey}
-                className="inline-flex items-center justify-center rounded-full bg-slate-900 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-slate-900/10 transition hover:bg-slate-800"
-              >
-                + Create Survey
-              </button>
             </div>
           </div>
-        </div>
 
         {error && (
           <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg">
@@ -141,7 +141,7 @@ function DashboardPage() {
                     <Link
                       to="/dashboard/$surveyId/responses"
                       params={{ surveyId: survey.id }}
-                      className="block rounded-full border border-green-200 bg-green-50 px-4 py-3 text-center text-sm font-semibold text-green-700 transition hover:bg-green-100"
+                      className="block rounded-full border border-slate-200 bg-slate-50 px-4 py-3 text-center text-sm font-semibold text-slate-900 transition hover:bg-slate-100"
                     >
                       📊 Responses
                     </Link>
@@ -151,13 +151,13 @@ function DashboardPage() {
                         navigator.clipboard.writeText(url)
                         alert('Survey link copied to clipboard!')
                       }}
-                      className="w-full rounded-full border border-blue-200 bg-blue-50 px-4 py-3 text-center text-sm font-semibold text-blue-700 transition hover:bg-blue-100"
+                      className="w-full rounded-full border border-slate-200 bg-slate-50 px-4 py-3 text-center text-sm font-semibold text-slate-900 transition hover:bg-slate-100"
                     >
                       🔗 Copy Link
                     </button>
                     <button
                       onClick={() => handleDeleteSurvey(survey.id)}
-                      className="w-full rounded-full border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-600 transition hover:bg-red-100"
+                      className="w-full rounded-full border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-900 transition hover:bg-slate-100"
                     >
                       Delete
                     </button>
