@@ -4,7 +4,7 @@ import { useAuth } from '../../stores/authContext'
 import type { Survey } from '../../types'
 import { surveysApi } from '../../utils/api'
 
-export const Route = createFileRoute('/dashboard/')({
+export const Route = createFileRoute('/dashboard/index/new')({
   component: DashboardPage,
 })
 

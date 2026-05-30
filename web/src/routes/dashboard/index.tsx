@@ -70,19 +70,24 @@ function DashboardPage() {
     return <div className="flex items-center justify-center min-h-screen">Loading surveys...</div>
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-5xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-4xl font-bold text-gray-900">My Surveys</h1>
-            <p className="text-gray-600 mt-2">{surveys.length} survey{surveys.length !== 1 ? 's' : ''}</p>
+    <div className="min-h-screen bg-slate-50 py-12 px-4">
+      <div className="mx-auto max-w-6xl">
+        <div className="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-xl mb-10">
+          <div className="h-2 bg-gradient-to-r from-sky-500 via-sky-600 to-cyan-500" />
+          <div className="p-8 lg:p-10">
+            <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+              <div>
+                <h1 className="text-4xl font-bold text-slate-900">My Surveys</h1>
+                <p className="text-slate-600 mt-2">{surveys.length} survey{surveys.length !== 1 ? 's' : ''}</p>
+              </div>
+              <button
+                onClick={handleCreateSurvey}
+                className="inline-flex items-center justify-center rounded-full bg-slate-900 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-slate-900/10 transition hover:bg-slate-800"
+              >
+                + Create Survey
+              </button>
+            </div>
           </div>
-          <button
-            onClick={handleCreateSurvey}
-            className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition shadow-sm"
-          >
-            + Create Survey
-          </button>
         </div>
 
         {error && (
@@ -92,13 +97,13 @@ function DashboardPage() {
         )}
 
         {surveys.length === 0 ? (
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
-            <div className="text-5xl mb-4">📋</div>
-            <p className="text-gray-600 text-lg font-semibold mb-2">No surveys yet</p>
-            <p className="text-gray-500 mb-6">Create your first survey to get started</p>
+          <div className="bg-white rounded-[1.75rem] border border-slate-200 p-14 text-center shadow-sm">
+            <div className="mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-3xl bg-slate-100 text-4xl">📋</div>
+            <p className="text-slate-700 text-xl font-semibold mb-2">No surveys yet</p>
+            <p className="text-slate-500 mb-6">Create your first survey to get started.</p>
             <button
               onClick={handleCreateSurvey}
-              className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition"
+              className="rounded-full bg-slate-900 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-slate-900/10 transition hover:bg-slate-800"
             >
               Create Your First Survey
             </button>
@@ -108,7 +113,7 @@ function DashboardPage() {
             {surveys.map((survey) => (
               <div
                 key={survey.id}
-                className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition group"
+                className="overflow-hidden rounded-[1.75rem] border border-slate-200 bg-white shadow-sm transition hover:shadow-lg"
               >
                 <div
                   className="h-2"
@@ -118,31 +123,31 @@ function DashboardPage() {
                 />
 
                 <div className="p-6">
-                  <h2 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2">
+                  <h2 className="text-xl font-bold text-slate-900 mb-2 line-clamp-2">
                     {survey.title}
                   </h2>
-                  <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+                  <p className="text-sm text-slate-600 mb-5 line-clamp-2">
                     {survey.description || 'No description'}
                   </p>
 
-                  <div className="space-y-3">
+                  <div className="grid gap-3">
                     <Link
                       to={`/dashboard/$surveyId/builder`}
                       params={{ surveyId: survey.id }}
-                      className="block px-4 py-2 bg-blue-50 text-blue-600 rounded-lg text-center font-semibold hover:bg-blue-100 transition"
+                      className="block rounded-full border border-slate-200 bg-slate-50 px-4 py-3 text-center text-sm font-semibold text-slate-900 transition hover:bg-slate-100"
                     >
                       Edit
                     </Link>
                     <Link
                       to={`/dashboard/$surveyId/responses`}
                       params={{ surveyId: survey.id }}
-                      className="block px-4 py-2 bg-green-50 text-green-600 rounded-lg text-center font-semibold hover:bg-green-100 transition"
+                      className="block rounded-full border border-slate-200 bg-emerald-50 px-4 py-3 text-center text-sm font-semibold text-emerald-700 transition hover:bg-emerald-100"
                     >
                       Responses
                     </Link>
                     <button
                       onClick={() => handleDeleteSurvey(survey.id)}
-                      className="w-full px-4 py-2 bg-red-50 text-red-600 rounded-lg font-semibold hover:bg-red-100 transition"
+                      className="w-full rounded-full border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-600 transition hover:bg-red-100"
                     >
                       Delete
                     </button>

@@ -89,28 +89,33 @@ function ResponsesPage() {
     return <div className="flex items-center justify-center min-h-screen">Loading responses...</div>
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-4xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Survey Responses</h1>
-            <p className="text-gray-600 mt-2">{responses.length} response{responses.length !== 1 ? 's' : ''}</p>
-          </div>
-          <div className="flex gap-2">
-            {responses.length > 0 && (
-              <button
-                onClick={handleExportCSV}
-                className="px-4 py-2 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition"
-              >
-                Export CSV
-              </button>
-            )}
-            <button
-              onClick={() => navigate({ to: '/dashboard' })}
-              className="px-4 py-2 bg-gray-200 text-gray-900 font-semibold rounded-lg hover:bg-gray-300 transition"
-            >
-              Back
-            </button>
+    <div className="min-h-screen bg-slate-50 py-12 px-4">
+      <div className="mx-auto max-w-5xl">
+        <div className="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-xl mb-10">
+          <div className="h-2 bg-gradient-to-r from-emerald-500 via-sky-500 to-indigo-500" />
+          <div className="p-8 lg:p-10">
+            <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+              <div>
+                <h1 className="text-3xl font-bold text-slate-900">Survey Responses</h1>
+                <p className="text-slate-600 mt-2">{responses.length} response{responses.length !== 1 ? 's' : ''}</p>
+              </div>
+              <div className="flex flex-wrap gap-3">
+                {responses.length > 0 && (
+                  <button
+                    onClick={handleExportCSV}
+                    className="inline-flex items-center justify-center rounded-full bg-emerald-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-600/20 transition hover:bg-emerald-700"
+                  >
+                    Export CSV
+                  </button>
+                )}
+                <button
+                  onClick={() => navigate({ to: '/dashboard' })}
+                  className="inline-flex items-center justify-center rounded-full bg-slate-200 px-5 py-3 text-sm font-semibold text-slate-900 transition hover:bg-slate-300"
+                >
+                  Back
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -149,37 +154,37 @@ function ResponsesPage() {
             {responses.map((response, responseIndex) => (
               <div
                 key={response.id}
-                className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition"
+                className="overflow-hidden rounded-[1.75rem] border border-slate-200 bg-white shadow-sm transition hover:shadow-lg"
               >
-                <button
-                  onClick={() =>
-                    setExpandedResponseId(
-                      expandedResponseId === response.id ? null : response.id,
-                    )
-                  }
-                  className="w-full p-6 flex justify-between items-center hover:bg-gray-50 transition"
-                >
-                  <div className="text-left flex-1">
-                    <h3 className="font-semibold text-gray-900">
-                      Response #{responses.length - responseIndex}
-                    </h3>
-                    <p className="text-sm text-gray-600 mt-1">
+                <div className="flex flex-col gap-4 p-6 lg:flex-row lg:items-start lg:justify-between">
+                  <div className="min-w-0 flex-1">
+                    <h3 className="font-semibold text-slate-900">Response #{responses.length - responseIndex}</h3>
+                    <p className="text-sm text-slate-600 mt-1">
                       {new Date(response.submitted_at).toLocaleString()}
                     </p>
                   </div>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      handleDeleteResponse(response.id)
-                    }}
-                    className="px-3 py-1 bg-red-100 text-red-600 text-sm font-semibold rounded-lg hover:bg-red-200 transition"
-                  >
-                    Delete
-                  </button>
-                </button>
+                  <div className="flex gap-3">
+                    <button
+                      onClick={() =>
+                        setExpandedResponseId(
+                          expandedResponseId === response.id ? null : response.id,
+                        )
+                      }
+                      className="inline-flex items-center justify-center rounded-full bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-200"
+                    >
+                      {expandedResponseId === response.id ? 'Hide details' : 'View details'}
+                    </button>
+                    <button
+                      onClick={() => handleDeleteResponse(response.id)}
+                      className="inline-flex items-center justify-center rounded-full bg-red-50 px-4 py-2 text-sm font-semibold text-red-600 transition hover:bg-red-100"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
 
                 {expandedResponseId === response.id && (
-                  <div className="border-t border-gray-200 p-6 bg-gray-50 space-y-4">
+                  <div className="border-t border-slate-200 bg-slate-50 p-6 space-y-4">
                     {response.answers.length === 0 ? (
                       <p className="text-gray-600">No answers recorded</p>
                     ) : (
@@ -209,11 +214,6 @@ function ResponsesPage() {
           </div>
         )}
       </div>
-    </div>
-  )
-}
-        </div>
-      )}
     </div>
   )
 }

@@ -64,25 +64,16 @@ surveysRouter.post('/surveys', async (c) => {
 
 /**
  * GET /surveys/:id
- * Get a specific survey with its questions
+ * Get a specific survey. Public access is allowed so the shared survey link works without login.
  */
 surveysRouter.get('/surveys/:id', async (c) => {
   try {
-    const userId = c.req.header('x-user-id')
     const surveyId = c.req.param('id')
-
-    if (!userId) {
-      return c.json({ error: 'Unauthorized' }, 401)
-    }
 
     const survey = await getSurvey(c.env.DB, surveyId)
 
     if (!survey) {
       return c.json({ error: 'Survey not found' }, 404)
-    }
-
-    if (survey.user_id !== userId) {
-      return c.json({ error: 'Forbidden' }, 403)
     }
 
     return c.json({ survey })

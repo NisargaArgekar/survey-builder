@@ -2,7 +2,14 @@ import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
 import type { Question, Survey } from '../../types'
 import { questionsApi, responsesApi, surveysApi } from '../../utils/api'
-
+const QUESTION_TYPE_LABELS: Record<QuestionType, string> = {
+  short_text: 'Short Text',
+  long_text: 'Long Text',
+  multiple_choice: 'Multiple Choice',
+  rating: '1-5 Rating',
+  email: 'Email',
+  date: 'Date',
+}
 export const Route = createFileRoute('/survey/$surveyId')({
   component: PublicSurveyPage,
 })
@@ -102,29 +109,35 @@ function PublicSurveyPage() {
 
   return (
     <div
-      className="min-h-screen py-12 px-4"
+      className="min-h-screen py-12 px-4 bg-slate-50"
       style={{
         backgroundColor: survey.primary_color + '10',
       }}
     >
       <div className="max-w-2xl mx-auto">
         {/* Survey Header */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 mb-8">
-          <div className="flex items-start gap-4 mb-4">
-            {survey.logo_url && (
-              <img src={survey.logo_url} alt="Logo" className="w-20 h-20 object-contain flex-shrink-0" />
-            )}
-            <div className="flex-1">
-              <h1 className="text-4xl font-bold" style={{ color: survey.primary_color }}>
-                {survey.title}
-              </h1>
-              {survey.description && <p className="text-gray-600 mt-3 text-lg">{survey.description}</p>}
+        <div className="overflow-hidden rounded-[2rem] border border-gray-200 bg-white shadow-xl mb-8">
+          <div
+            className="h-2"
+            style={{
+              backgroundColor: survey.primary_color,
+            }}
+          />
+          <div className="p-8">
+            <div className="flex flex-col gap-5 lg:flex-row lg:items-center">
+              {survey.logo_url && (
+                <img src={survey.logo_url} alt="Logo" className="w-24 h-24 object-contain rounded-3xl bg-slate-100 p-2" />
+              )}
+              <div className="flex-1">
+                <h1 className="text-4xl font-bold text-slate-900">{survey.title}</h1>
+                {survey.description && <p className="text-gray-600 mt-4 text-lg leading-8">{survey.description}</p>}
+              </div>
             </div>
           </div>
         </div>
 
         {error && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg">
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-[1.5rem] shadow-sm">
             {error}
           </div>
         )}
@@ -132,14 +145,19 @@ function PublicSurveyPage() {
         {/* Survey Form */}
         <form onSubmit={handleSubmit} className="space-y-5">
           {questions.map((question, index) => (
-            <div key={question.id} className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
-              <label className="block font-semibold text-gray-900 mb-3 text-lg">
-                {index + 1}. {question.label}
-                {question.is_required && <span className="text-red-600 ml-1">*</span>}
-              </label>
+            <div key={question.id} className="bg-white rounded-[1.75rem] shadow-sm border border-gray-200 p-8">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <label className="block font-semibold text-gray-900 text-lg">
+                  {index + 1}. {question.label}
+                  {question.is_required && <span className="text-red-600 ml-1">*</span>}
+                </label>
+                <span className="inline-flex rounded-full bg-slate-100 px-3 py-1 text-sm font-semibold text-slate-600">
+                  {QUESTION_TYPE_LABELS[question.type] || 'Multiple Choice'}
+                </span>
+              </div>
 
               {question.description && (
-                <p className="text-gray-600 text-sm mb-4">{question.description}</p>
+                <p className="text-gray-600 text-sm mt-3">{question.description}</p>
               )}
 
               {question.type === 'short_text' && (
@@ -178,16 +196,19 @@ function PublicSurveyPage() {
               {question.type === 'multiple_choice' && question.options && (
                 <div className="space-y-3">
                   {JSON.parse(question.options).map((option: string) => (
-                    <label key={option} className="flex items-center p-3 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition">
+                    <label
+                      key={option}
+                      className="flex items-center gap-4 rounded-3xl border border-gray-300 bg-slate-50 px-4 py-3 transition hover:border-slate-400"
+                    >
                       <input
                         type="radio"
                         name={question.id}
                         value={option}
                         checked={answers[question.id] === option}
                         onChange={(e) => handleAnswerChange(question.id, e.target.value)}
-                        className="w-4 h-4 cursor-pointer"
+                        className="h-5 w-5 text-sky-600"
                       />
-                      <span className="ml-3 text-gray-900 font-medium">{option}</span>
+                      <span className="text-gray-900 font-medium">{option}</span>
                     </label>
                   ))}
                 </div>
@@ -234,7 +255,7 @@ function PublicSurveyPage() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full px-6 py-3.5 text-white font-semibold rounded-lg hover:opacity-90 disabled:opacity-50 transition text-lg"
+            className="w-full rounded-full px-6 py-3.5 text-white font-semibold shadow-lg transition hover:shadow-xl disabled:opacity-50 text-lg"
             style={{
               backgroundColor: survey.primary_color,
             }}

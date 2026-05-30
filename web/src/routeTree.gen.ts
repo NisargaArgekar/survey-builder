@@ -14,6 +14,7 @@ import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
 import { Route as SurveySurveyIdRouteImport } from './routes/survey/$surveyId'
 import { Route as AuthSignupRouteImport } from './routes/auth/signup'
 import { Route as AuthLoginRouteImport } from './routes/auth/login'
+import { Route as DashboardIndexNewRouteImport } from './routes/dashboard/index.new'
 import { Route as DashboardSurveyIdResponsesRouteImport } from './routes/dashboard/$surveyId/responses'
 import { Route as DashboardSurveyIdBuilderRouteImport } from './routes/dashboard/$surveyId/builder'
 
@@ -42,6 +43,11 @@ const AuthLoginRoute = AuthLoginRouteImport.update({
   path: '/auth/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardIndexNewRoute = DashboardIndexNewRouteImport.update({
+  id: '/dashboard/index/new',
+  path: '/dashboard/index/new',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DashboardSurveyIdResponsesRoute =
   DashboardSurveyIdResponsesRouteImport.update({
     id: '/dashboard/$surveyId/responses',
@@ -63,6 +69,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/': typeof DashboardIndexRoute
   '/dashboard/$surveyId/builder': typeof DashboardSurveyIdBuilderRoute
   '/dashboard/$surveyId/responses': typeof DashboardSurveyIdResponsesRoute
+  '/dashboard/index/new': typeof DashboardIndexNewRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -72,6 +79,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof DashboardIndexRoute
   '/dashboard/$surveyId/builder': typeof DashboardSurveyIdBuilderRoute
   '/dashboard/$surveyId/responses': typeof DashboardSurveyIdResponsesRoute
+  '/dashboard/index/new': typeof DashboardIndexNewRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -82,6 +90,7 @@ export interface FileRoutesById {
   '/dashboard/': typeof DashboardIndexRoute
   '/dashboard/$surveyId/builder': typeof DashboardSurveyIdBuilderRoute
   '/dashboard/$surveyId/responses': typeof DashboardSurveyIdResponsesRoute
+  '/dashboard/index/new': typeof DashboardIndexNewRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -93,6 +102,7 @@ export interface FileRouteTypes {
     | '/dashboard/'
     | '/dashboard/$surveyId/builder'
     | '/dashboard/$surveyId/responses'
+    | '/dashboard/index/new'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -102,6 +112,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/dashboard/$surveyId/builder'
     | '/dashboard/$surveyId/responses'
+    | '/dashboard/index/new'
   id:
     | '__root__'
     | '/'
@@ -111,6 +122,7 @@ export interface FileRouteTypes {
     | '/dashboard/'
     | '/dashboard/$surveyId/builder'
     | '/dashboard/$surveyId/responses'
+    | '/dashboard/index/new'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -121,6 +133,7 @@ export interface RootRouteChildren {
   DashboardIndexRoute: typeof DashboardIndexRoute
   DashboardSurveyIdBuilderRoute: typeof DashboardSurveyIdBuilderRoute
   DashboardSurveyIdResponsesRoute: typeof DashboardSurveyIdResponsesRoute
+  DashboardIndexNewRoute: typeof DashboardIndexNewRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -160,6 +173,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard/index/new': {
+      id: '/dashboard/index/new'
+      path: '/dashboard/index/new'
+      fullPath: '/dashboard/index/new'
+      preLoaderRoute: typeof DashboardIndexNewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dashboard/$surveyId/responses': {
       id: '/dashboard/$surveyId/responses'
       path: '/dashboard/$surveyId/responses'
@@ -185,6 +205,7 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardIndexRoute: DashboardIndexRoute,
   DashboardSurveyIdBuilderRoute: DashboardSurveyIdBuilderRoute,
   DashboardSurveyIdResponsesRoute: DashboardSurveyIdResponsesRoute,
+  DashboardIndexNewRoute: DashboardIndexNewRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

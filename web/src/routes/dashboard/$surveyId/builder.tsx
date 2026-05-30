@@ -35,6 +35,8 @@ function SurveyBuilderPage() {
   const [logoUrl, setLogoUrl] = useState('')
   const [editingQuestionId, setEditingQuestionId] = useState<string | null>(null)
   const [surveyLink, setSurveyLink] = useState('')
+  const [copied, setCopied] = useState(false)
+  const [showAddMenu, setShowAddMenu] = useState(false)
 
   useEffect(() => {
     if (!user) return
@@ -117,6 +119,7 @@ function SurveyBuilderPage() {
           q.id === questionId ? { ...q, ...updates, editingOptions: undefined } : q,
         ),
       )
+      setEditingQuestionId(null)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to update question')
     }
@@ -162,140 +165,209 @@ function SurveyBuilderPage() {
     }
   }
 
-  const handleCopyLink = () => {
-    navigator.clipboard.writeText(surveyLink)
+  const handleCopyLink = async () => {
+    if (!surveyLink) return
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(surveyLink)
+      } else {
+        // Fallback
+        const ta = document.createElement('textarea')
+        ta.value = surveyLink
+        document.body.appendChild(ta)
+        ta.select()
+        document.execCommand('copy')
+        document.body.removeChild(ta)
+      }
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch (e) {
+      console.error('Copy failed', e)
+      setError('Failed to copy link')
+    }
   }
 
   if (isLoading) return <div className="flex items-center justify-center min-h-screen">Loading survey...</div>
   if (!survey) return <div className="flex items-center justify-center min-h-screen">Survey not found</div>
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-3xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-slate-100 to-sky-50 py-12">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="mb-8 rounded-[2rem] border border-slate-200 bg-white/90 p-8 shadow-xl shadow-slate-200/60 backdrop-blur-sm">
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-sky-600">Survey Builder</p>
+              <h1 className="mt-3 text-4xl font-bold tracking-tight text-slate-900">{survey.title || 'Untitled Survey'}</h1>
+              {survey.description ? (
+                <p className="mt-3 max-w-2xl text-base leading-7 text-slate-600">{survey.description}</p>
+              ) : (
+                <p className="mt-3 max-w-2xl text-base leading-7 text-slate-500">Add a description to describe the survey experience.</p>
+              )}
+            </div>
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <div className="rounded-3xl bg-slate-100 p-4 text-center">
+                <p className="text-sm text-slate-500">Survey link</p>
+                <p className="mt-2 truncate text-sm font-semibold text-slate-900">{surveyLink}</p>
+              </div>
+              <div className="rounded-3xl bg-slate-100 p-4 text-center">
+                <p className="text-sm text-slate-500">Brand color</p>
+                <div className="mt-3 inline-flex items-center gap-3 rounded-full bg-white px-4 py-2 shadow-sm">
+                  <span className="inline-block h-4 w-4 rounded-full" style={{ backgroundColor: survey.primary_color }} />
+                  <span className="text-sm font-medium text-slate-900">{survey.primary_color}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {error && (
-          <div className="mb-4 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg">
+          <div className="mb-4 p-4 bg-red-50 border border-red-200 text-red-700 rounded-2xl shadow-sm">
             {error}
           </div>
         )}
 
-        {/* Survey Settings Card */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 mb-6">
-          <h2 className="text-2xl font-bold mb-6">Survey Settings</h2>
-
-          <div className="space-y-5">
-            <div>
-              <label className="block text-sm font-semibold text-gray-900 mb-2">Survey Title</label>
-              <input
-                type="text"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                placeholder="Enter survey title"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-gray-900 mb-2">
-                Description (Optional)
-              </label>
-              <textarea
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                placeholder="Add a description for your survey"
-                rows={3}
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1.55fr_0.95fr] mb-6">
+          <div className="bg-white/95 rounded-[1.75rem] border border-slate-200 p-8 shadow-xl shadow-slate-200/40">
+            <div className="flex items-center justify-between gap-4 mb-6">
               <div>
-                <label className="block text-sm font-semibold text-gray-900 mb-2">
-                  Primary Color
-                </label>
-                <div className="flex gap-3">
+                <h2 className="text-2xl font-semibold text-slate-900">Survey Settings</h2>
+                <p className="mt-2 text-sm text-slate-500">Brand your survey page and configure response details.</p>
+              </div>
+              <div className="inline-flex items-center gap-2 rounded-full bg-sky-50 px-4 py-2 text-sm font-semibold text-sky-700">
+                <span className="inline-block h-2.5 w-2.5 rounded-full bg-sky-700" /> Live edit
+              </div>
+            </div>
+
+            <div className="space-y-5">
+              <div>
+                <label className="block text-sm font-semibold text-slate-900 mb-2">Survey Title</label>
+                <input
+                  type="text"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  className="w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 shadow-sm focus:border-sky-400 focus:outline-none focus:ring-2 focus:ring-sky-200"
+                  placeholder="Enter survey title"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-slate-900 mb-2">Description (Optional)</label>
+                <textarea
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  className="w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 shadow-sm focus:border-sky-400 focus:outline-none focus:ring-2 focus:ring-sky-200"
+                  placeholder="Add a description for your survey"
+                  rows={4}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div>
+                  <label className="block text-sm font-semibold text-slate-900 mb-2">Primary Color</label>
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="color"
+                      value={primaryColor}
+                      onChange={(e) => setPrimaryColor(e.target.value)}
+                      className="h-12 w-12 rounded-3xl border border-slate-200 p-1 cursor-pointer"
+                    />
+                    <input
+                      type="text"
+                      value={primaryColor}
+                      onChange={(e) => setPrimaryColor(e.target.value)}
+                      className="flex-1 rounded-3xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 shadow-sm focus:border-sky-400 focus:outline-none focus:ring-2 focus:ring-sky-200"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-slate-900 mb-2">Logo URL (Optional)</label>
                   <input
-                    type="color"
-                    value={primaryColor}
-                    onChange={(e) => setPrimaryColor(e.target.value)}
-                    className="w-12 h-10 border border-gray-300 rounded-lg cursor-pointer"
-                  />
-                  <input
-                    type="text"
-                    value={primaryColor}
-                    onChange={(e) => setPrimaryColor(e.target.value)}
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    type="url"
+                    value={logoUrl}
+                    onChange={(e) => setLogoUrl(e.target.value)}
+                    className="w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 shadow-sm focus:border-sky-400 focus:outline-none focus:ring-2 focus:ring-sky-200"
+                    placeholder="https://example.com/logo.png"
                   />
                 </div>
               </div>
 
+              <button
+                onClick={handleUpdateSurvey}
+                className="w-full rounded-full bg-slate-900 px-6 py-3 text-sm font-semibold text-white shadow-xl shadow-slate-900/10 transition hover:bg-slate-800"
+              >
+                Save Settings
+              </button>
+            </div>
+          </div>
+
+          <div className="bg-white/95 rounded-[1.75rem] border border-slate-200 p-6 shadow-xl shadow-slate-200/40">
+            <div className="flex flex-col gap-4">
               <div>
-                <label className="block text-sm font-semibold text-gray-900 mb-2">
-                  Logo URL (Optional)
-                </label>
-                <input
-                  type="url"
-                  value={logoUrl}
-                  onChange={(e) => setLogoUrl(e.target.value)}
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                  placeholder="https://example.com/logo.png"
-                />
+                <h3 className="text-sm font-semibold text-slate-900">Share Survey</h3>
+                <p className="mt-2 text-sm text-slate-500">Send this public link to respondents.</p>
+              </div>
+
+              <div className="rounded-[1.5rem] border border-slate-200 bg-slate-50 p-4 shadow-sm">
+                <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Public link</p>
+                <p className="mt-3 truncate text-sm font-semibold text-slate-900">{surveyLink}</p>
+              </div>
+
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                <button
+                  onClick={handleCopyLink}
+                  className="inline-flex items-center justify-center rounded-full bg-slate-900 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-slate-900/20 transition hover:bg-slate-800"
+                >
+                  Copy link
+                </button>
+                {copied && (
+                  <span className="inline-flex items-center rounded-full bg-emerald-100 px-3 py-1 text-sm font-semibold text-emerald-700">
+                    Copied
+                  </span>
+                )}
               </div>
             </div>
-
-            <button
-              onClick={handleUpdateSurvey}
-              className="w-full px-6 py-2.5 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition"
-            >
-              Save Settings
-            </button>
-          </div>
-        </div>
-
-        {/* Survey Link Card */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
-          <h3 className="text-sm font-semibold text-gray-900 mb-3">Share Survey</h3>
-          <div className="flex gap-2">
-            <input
-              type="text"
-              readOnly
-              value={surveyLink}
-              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-sm"
-            />
-            <button
-              onClick={handleCopyLink}
-              className="px-4 py-2 bg-gray-100 text-gray-900 font-semibold rounded-lg hover:bg-gray-200 transition"
-            >
-              Copy
-            </button>
           </div>
         </div>
 
         {/* Questions Section */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold">Questions</h2>
-            <div className="flex gap-2">
-              <div className="relative group">
-                <button className="px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition">
-                  + Add Question
-                </button>
-                <div className="absolute right-0 hidden group-hover:block bg-white border border-gray-200 rounded-lg shadow-lg mt-2 min-w-48 z-10">
+        <div className="bg-white/95 rounded-[1.75rem] border border-slate-200 p-8 shadow-xl shadow-slate-200/40">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between mb-6">
+            <div>
+              <h2 className="text-2xl font-semibold text-slate-900">Questions</h2>
+              <p className="mt-2 text-sm text-slate-500">Create the questions respondents will see.</p>
+            </div>
+            <div className="relative">
+              <button
+                onClick={() => setShowAddMenu((s) => !s)}
+                className="inline-flex items-center justify-center rounded-full bg-sky-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-sky-600/20 transition hover:bg-sky-700"
+              >
+                + Add Question
+              </button>
+
+              {showAddMenu && (
+                <div className="absolute right-0 mt-3 w-52 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl">
                   {QUESTION_TYPES.map((type) => (
                     <button
                       key={type.value}
-                      onClick={() => handleAddQuestion(type.value)}
-                      className="block w-full text-left px-4 py-2 text-sm text-gray-900 hover:bg-gray-100 first:rounded-t-lg last:rounded-b-lg"
+                      onClick={() => {
+                        handleAddQuestion(type.value)
+                        setShowAddMenu(false)
+                      }}
+                      className="block w-full px-4 py-3 text-left text-sm font-medium text-slate-900 transition hover:bg-slate-50"
                     >
                       {type.label}
                     </button>
                   ))}
                 </div>
-              </div>
+              )}
             </div>
           </div>
 
           {questions.length === 0 ? (
-            <p className="text-center text-gray-600 py-12">No questions yet. Add one to get started!</p>
+            <div className="rounded-[1.5rem] border border-dashed border-slate-300 bg-slate-50 p-12 text-center text-slate-500">
+              No questions yet. Add one to get started!
+            </div>
           ) : (
             <div className="space-y-4">
               {questions.map((question, index) => (
@@ -317,6 +389,7 @@ function SurveyBuilderPage() {
                       ),
                     )
                   }
+                  onCancel={() => setEditingQuestionId(null)}
                 />
               ))}
             </div>
@@ -359,6 +432,7 @@ interface QuestionCardProps {
   onMoveUp: () => void
   onMoveDown: () => void
   onEditingOptionsChange: (opts: string) => void
+  onCancel: () => void
 }
 
 function QuestionCard({
@@ -375,8 +449,15 @@ function QuestionCard({
 }: QuestionCardProps) {
   const [label, setLabel] = useState(question.label)
   const [type, setType] = useState<QuestionType>(question.type)
-  const [isRequired, setIsRequired] = useState(question.is_required)
-  const optionsStr = question.editingOptions ?? (question.options ? JSON.stringify(JSON.parse(question.options), null, 1) : '')
+  const [isRequired, setIsRequired] = useState(Boolean(question.is_required))
+
+  // Sync local state when question prop changes (after save)
+  useEffect(() => {
+    setLabel(question.label)
+    setType(question.type)
+    setIsRequired(Boolean(question.is_required))
+  }, [question.id, question.label, question.type, question.is_required])
+  const optionsStr = question.editingOptions ?? (question.options ? (Array.isArray(question.options) ? question.options.join('\n') : (() => { try { return JSON.parse(question.options).join('\n') } catch { return String(question.options) } })()) : '')
 
   const handleSave = () => {
     const updates: any = {
@@ -391,7 +472,7 @@ function QuestionCard({
           .split('\n')
           .map((o) => o.trim())
           .filter((o) => o)
-        updates.options = options
+        updates.options = JSON.stringify(options)
       } catch {
         alert('Invalid options format')
         return
@@ -403,25 +484,25 @@ function QuestionCard({
 
   if (isEditing) {
     return (
-      <div className="border-2 border-blue-500 rounded-lg p-6 bg-blue-50">
-        <div className="space-y-4">
+      <div className="rounded-[1.5rem] border border-slate-200 bg-white p-6 shadow-lg shadow-slate-200/40">
+        <div className="space-y-5">
           <div>
-            <label className="block text-sm font-semibold text-gray-900 mb-2">Question Text</label>
+            <label className="block text-sm font-semibold text-slate-900 mb-2">Question text</label>
             <input
               type="text"
               value={label}
               onChange={(e) => setLabel(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 shadow-sm focus:border-sky-400 focus:outline-none focus:ring-2 focus:ring-sky-200"
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid gap-4 sm:grid-cols-2">
             <div>
-              <label className="block text-sm font-semibold text-gray-900 mb-2">Question Type</label>
+              <label className="block text-sm font-semibold text-slate-900 mb-2">Question type</label>
               <select
                 value={type}
                 onChange={(e) => setType(e.target.value as QuestionType)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 shadow-sm focus:border-sky-400 focus:outline-none focus:ring-2 focus:ring-sky-200"
               >
                 {QUESTION_TYPES.map((t) => (
                   <option key={t.value} value={t.value}>
@@ -432,49 +513,46 @@ function QuestionCard({
             </div>
 
             <div className="flex items-end">
-              <label className="flex items-center gap-2 cursor-pointer">
+              <label className="inline-flex items-center gap-3 rounded-3xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-900 shadow-sm cursor-pointer">
                 <input
                   type="checkbox"
                   checked={isRequired}
                   onChange={(e) => setIsRequired(e.target.checked)}
-                  className="w-4 h-4"
+                  className="h-4 w-4 rounded text-sky-600"
                 />
-                <span className="text-sm font-semibold text-gray-900">Required</span>
+                Required
               </label>
             </div>
           </div>
 
-          {(type === 'multiple_choice' || type === 'rating') && type === 'multiple_choice' && (
+          {type === 'multiple_choice' && (
             <div>
-              <label className="block text-sm font-semibold text-gray-900 mb-2">
-                Options (one per line)
-              </label>
+              <label className="block text-sm font-semibold text-slate-900 mb-2">Options (one per line)</label>
               <textarea
                 value={optionsStr}
                 onChange={(e) => onEditingOptionsChange(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono text-sm"
+                className="min-h-[140px] w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 shadow-sm focus:border-sky-400 focus:outline-none focus:ring-2 focus:ring-sky-200 font-mono"
                 rows={4}
                 placeholder="Option 1&#10;Option 2&#10;Option 3"
               />
             </div>
           )}
 
-          <div className="flex gap-2 justify-end">
+          <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
             <button
-              onClick={() => {
-                handleSave()
-              }}
-              className="px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition"
+              onClick={handleSave}
+              className="inline-flex items-center justify-center rounded-full bg-slate-900 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-slate-900/20 transition hover:bg-slate-800"
             >
-              Save
+              Save changes
             </button>
             <button
               onClick={() => {
                 setLabel(question.label)
                 setType(question.type)
                 setIsRequired(question.is_required)
+                onCancel()
               }}
-              className="px-4 py-2 bg-gray-300 text-gray-900 font-semibold rounded-lg hover:bg-gray-400 transition"
+              className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50"
             >
               Cancel
             </button>
@@ -485,43 +563,46 @@ function QuestionCard({
   }
 
   return (
-    <div className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition">
-      <div className="flex justify-between items-start gap-4">
-        <div className="flex-1">
-          <p className="text-sm text-gray-600 font-semibold">Question {index + 1}</p>
-          <p className="text-lg font-semibold text-gray-900">{label}</p>
-          <p className="text-sm text-gray-500 mt-1">
-            {QUESTION_TYPES.find((t) => t.value === type)?.label}
-            {isRequired && ' • Required'}
-          </p>
+    <div className="rounded-[1.5rem] border border-slate-200 bg-white p-5 shadow-sm transition hover:shadow-lg">
+      <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-center gap-3 mb-3">
+            <div className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-slate-600">
+              Q {index + 1}
+            </div>
+            <div className="inline-flex flex-wrap gap-2 text-xs font-medium text-slate-500">
+              <span className="rounded-full bg-slate-100 px-2 py-1">{QUESTION_TYPES.find((t) => t.value === type)?.label}</span>
+              {isRequired && <span className="rounded-full bg-emerald-100 px-2 py-1 text-emerald-700">Required</span>}
+            </div>
+          </div>
+          <p className="text-lg font-semibold text-slate-900">{label}</p>
+          <p className="mt-3 text-sm text-slate-500">This question will appear to respondents on your survey page.</p>
         </div>
 
-        <div className="flex gap-1">
+        <div className="flex flex-wrap items-center justify-end gap-2">
           <button
             onClick={onMoveUp}
             disabled={index === 0}
-            className="p-2 text-gray-600 hover:bg-gray-100 rounded disabled:opacity-50 disabled:cursor-not-allowed"
-            title="Move up"
+            className="rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-sm text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            ↑
+            Move up
           </button>
           <button
             onClick={onMoveDown}
             disabled={index === totalQuestions - 1}
-            className="p-2 text-gray-600 hover:bg-gray-100 rounded disabled:opacity-50 disabled:cursor-not-allowed"
-            title="Move down"
+            className="rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-sm text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            ↓
+            Move down
           </button>
           <button
             onClick={onEdit}
-            className="p-2 text-blue-600 hover:bg-blue-50 rounded font-semibold"
+            className="rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800"
           >
             Edit
           </button>
           <button
             onClick={onDelete}
-            className="p-2 text-red-600 hover:bg-red-50 rounded font-semibold"
+            className="rounded-full border border-red-200 bg-red-50 px-4 py-2 text-sm font-semibold text-red-600 transition hover:bg-red-100"
           >
             Delete
           </button>

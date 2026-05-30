@@ -112,6 +112,20 @@ export async function updateSurvey(
 }
 
 export async function deleteSurvey(db: D1Database, id: string): Promise<void> {
+  // Remove dependent records to satisfy foreign key constraints
+  // Delete answers for responses belonging to this survey
+  await db
+    .prepare('DELETE FROM answers WHERE response_id IN (SELECT id FROM responses WHERE survey_id = ?)')
+    .bind(id)
+    .run()
+
+  // Delete responses for this survey
+  await db.prepare('DELETE FROM responses WHERE survey_id = ?').bind(id).run()
+
+  // Delete questions for this survey
+  await db.prepare('DELETE FROM questions WHERE survey_id = ?').bind(id).run()
+
+  // Finally delete the survey
   await db.prepare('DELETE FROM surveys WHERE id = ?').bind(id).run()
 }
 
