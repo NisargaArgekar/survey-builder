@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [tanstackRouter({ target: 'react', autoCodeSplitting: true }), react()],
   server: {
     proxy: {
-      '/api': 'http://127.0.0.1:8787',
+      '/api': 'https://sde-intern-task-api.jimmy-dev.workers.dev',
     },
   },
 })
