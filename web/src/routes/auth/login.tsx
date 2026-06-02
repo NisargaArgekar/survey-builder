@@ -8,7 +8,7 @@ export const Route = createFileRoute('/auth/login')({
 
 function LoginPage() {
   const navigate = useNavigate()
-  const { login, isLoading, error } = useAuth()
+  const { login, isLoading, error } = useAuth() 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [localError, setLocalError] = useState('')
