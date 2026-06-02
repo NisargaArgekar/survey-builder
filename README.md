@@ -96,9 +96,3 @@ When you add Cloudflare bindings (D1, KV, R2, secrets) in `api/wrangler.jsonc`, 
 ```bash
 pnpm --filter sde-intern-task-api cf-typegen
 ```
-
-> We use pnpm for the workspace setup. If you have a strong preference for npm/yarn, you can convert it — but the lockfile we'll review is `pnpm-lock.yaml`.
-
-Good luck — we're excited to see what you build, and how you stand behind it.
-
-— The DoCoDeGo team
