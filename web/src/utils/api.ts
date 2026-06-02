@@ -30,6 +30,8 @@ function getAuthHeaders(): Record<string, string> {
   return {}
 }
 
+const API_BASE_URL = 'https://sde-intern-task-api.jimmy-dev.workers.dev'
+
 /**
  * Wrapper around fetch that handles errors and JSON parsing
  */
@@ -37,7 +39,7 @@ export async function apiCall(url: string, options: FetchOptions = {}): Promise<
   const { skipJson = false, ...fetchOptions } = options
 
   try {
-    const response = await fetch(url, {
+    const response = await fetch(`${API_BASE_URL}${url}`, {
       ...fetchOptions,
       headers: {
         'Content-Type': 'application/json',
