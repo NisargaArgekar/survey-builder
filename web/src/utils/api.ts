@@ -30,7 +30,7 @@ function getAuthHeaders(): Record<string, string> {
   return {}
 }
 
-const API_BASE_URL = 'https://sde-intern-task-api.jimmy-dev.workers.dev'
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? ''
 
 /**
  * Wrapper around fetch that handles errors and JSON parsing
