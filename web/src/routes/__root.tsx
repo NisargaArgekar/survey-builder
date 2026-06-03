@@ -17,34 +17,36 @@ function RootLayout() {
               </Link>
             </div>
             <div className="flex items-center gap-6">
-              {user ? (
-                <>
-                  <div className="text-sm">
-                    <p className="text-slate-400">Signed in as</p>
-                    <p className="font-semibold text-white">{user.email}</p>
-                  </div>
-                  <Link to="/dashboard" className="text-white font-semibold hover:text-slate-300 transition">
-                    Dashboard
-                  </Link>
-                  <button
-                    onClick={logout}
-                    className="px-4 py-2 text-white font-semibold hover:bg-slate-800 rounded-lg transition"
-                  >
-                    Logout
-                  </button>
-                </>
-              ) : !isPublicSurveyPage ? (
-                <>
-                  <Link to="/auth/login" className="text-white font-semibold hover:text-slate-300 transition">
-                    Login
-                  </Link>
-                  <Link
-                    to="/auth/signup"
-                    className="px-4 py-2 bg-white text-black font-semibold rounded-lg hover:bg-slate-200 transition"
-                  >
-                    Sign Up
-                  </Link>
-                </>
+              {!isPublicSurveyPage ? (
+                user ? (
+                  <>
+                    <div className="text-sm">
+                      <p className="text-slate-400">Signed in as</p>
+                      <p className="font-semibold text-white">{user.email}</p>
+                    </div>
+                    <Link to="/dashboard" className="text-white font-semibold hover:text-slate-300 transition">
+                      Dashboard
+                    </Link>
+                    <button
+                      onClick={logout}
+                      className="px-4 py-2 text-white font-semibold hover:bg-slate-800 rounded-lg transition"
+                    >
+                      Logout
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <Link to="/auth/login" className="text-white font-semibold hover:text-slate-300 transition">
+                      Login
+                    </Link>
+                    <Link
+                      to="/auth/signup"
+                      className="px-4 py-2 bg-white text-black font-semibold rounded-lg hover:bg-slate-200 transition"
+                    >
+                      Sign Up
+                    </Link>
+                  </>
+                )
               ) : null}
             </div>
           </div>
