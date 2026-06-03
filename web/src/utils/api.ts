@@ -38,6 +38,9 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? ''
 export async function apiCall(url: string, options: FetchOptions = {}): Promise<any> {
   const { skipJson = false, ...fetchOptions } = options
 
+  const method = (fetchOptions.method || 'GET').toString().toUpperCase()
+  const start = performance.now()
+
   try {
     const response = await fetch(`${API_BASE_URL}${url}`, {
       ...fetchOptions,
@@ -48,6 +51,9 @@ export async function apiCall(url: string, options: FetchOptions = {}): Promise<
       },
     })
 
+    const duration = performance.now() - start
+    console.debug(`[API] ${method} ${url} -> ${response.status} (${duration.toFixed(1)}ms)`) 
+
     if (!response.ok) {
       const error = await response.json().catch(() => ({}))
       throw new ApiError(response.status, error.error || 'API error')
@@ -57,8 +63,12 @@ export async function apiCall(url: string, options: FetchOptions = {}): Promise<
       return response
     }
 
-    return response.json()
+    const json = await response.json()
+    console.debug(`[API] ${method} ${url} JSON parsed (${duration.toFixed(1)}ms)`)
+    return json
   } catch (error) {
+    const duration = performance.now() - start
+    console.debug(`[API] ${method} ${url} ERROR (${duration.toFixed(1)}ms):`, error)
     if (error instanceof ApiError) {
       throw error
     }

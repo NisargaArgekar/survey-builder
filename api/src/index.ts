@@ -7,10 +7,13 @@ import surveysRouter from './routes/surveys'
 
 const app = new Hono<{ Bindings: Env }>()
 
-// Initialize database on startup
+// Initialize database once per worker instance
 app.use('*', async (c, next) => {
   try {
-    await initializeDb(c.env.DB)
+    if (!(globalThis as any).__dbInitialized) {
+      await initializeDb(c.env.DB)
+      ;(globalThis as any).__dbInitialized = true
+    }
   } catch (error) {
     console.error('DB init error:', error)
   }
