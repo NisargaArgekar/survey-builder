@@ -13,7 +13,7 @@ function RootLayout() {
           <div className="flex justify-between h-16">
             <div className="flex items-center">
               <Link to="/" className="text-2xl font-bold text-white font-mono">
-                SB
+                Survey Builder
               </Link>
             </div>
             <div className="flex items-center gap-6">

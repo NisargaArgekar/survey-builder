@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { useAuth } from '../../stores/authContext'
 import type { Question, Response } from '../../types'
 import { questionsApi, responsesApi } from '../../utils/api'
+import { formatLocalDate, formatLocalDateTime } from '../../utils/date'
 
 export const Route = createFileRoute('/dashboard/responses')({
   component: ResponsesPage,
@@ -123,7 +124,7 @@ function ResponsesPage() {
                     >
                       <div className="font-semibold text-slate-900">Response #{idx + 1}</div>
                       <div className="text-xs text-slate-500 mt-1">
-                        {new Date(response.submitted_at).toLocaleString()}
+                        {formatLocalDateTime(response.submitted_at)}
                       </div>
                     </button>
                   ))}
@@ -139,7 +140,7 @@ function ResponsesPage() {
                     <div>
                       <h2 className="font-semibold text-slate-900">Response Details</h2>
                       <p className="text-xs text-slate-500 mt-1">
-                        {new Date(selectedResponse.submitted_at).toLocaleString()}
+                        {formatLocalDateTime(selectedResponse.submitted_at)}
                       </p>
                     </div>
                     <button

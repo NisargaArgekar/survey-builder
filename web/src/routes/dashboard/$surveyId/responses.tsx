@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { useAuth } from '../../../stores/authContext'
 import type { Question, Response } from '../../../types'
 import { questionsApi, responsesApi } from '../../../utils/api'
+import { formatLocalDate, formatLocalDateTime } from '../../../utils/date'
 
 export const Route = createFileRoute('/dashboard/$surveyId/responses')({
   component: ResponsesPage,
@@ -66,7 +67,7 @@ function ResponsesPage() {
     const headers = ['Response ID', 'Submitted At', ...questions.map((q) => q.label)]
     const rows = responses.map((response) => [
       response.id,
-      new Date(response.submitted_at).toLocaleString(),
+      formatLocalDateTime(response.submitted_at),
       ...questions.map((q) => {
         const answer = response.answers.find((a) => a.question_id === q.id)
         return answer?.answer_value || ''
@@ -145,7 +146,7 @@ function ResponsesPage() {
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                 <p className="text-sm text-gray-600 font-semibold">Last Response</p>
                 <p className="text-sm font-semibold text-gray-900">
-                  {new Date(responses[responses.length - 1].submitted_at).toLocaleDateString()}
+                  {formatLocalDate(responses[responses.length - 1].submitted_at)}
                 </p>
               </div>
             </div>
@@ -160,7 +161,7 @@ function ResponsesPage() {
                   <div className="min-w-0 flex-1">
                     <h3 className="font-semibold text-slate-900">Response #{responses.length - responseIndex}</h3>
                     <p className="text-sm text-slate-600 mt-1">
-                      {new Date(response.submitted_at).toLocaleString()}
+                      {formatLocalDateTime(response.submitted_at)}
                     </p>
                   </div>
                   <div className="flex gap-3">
